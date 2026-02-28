@@ -1,0 +1,6 @@
+{
+  "mask_file": "config/masks/sobel_x.txt",
+  "stride": 1,
+  "r": 2,
+  "activation": "relu"
+}

@@ -1,0 +1,2 @@
+class ActivationError(Exception):
+    pass

@@ -7,16 +7,17 @@ from app.settings import OUTPUT_DIR
 
 app = FastAPI(title="Filtro RGB - Orquestrador")
 
-# Em dev, libera CORS
+# CORS liberado para desenvolvimento
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # em produção, restrinja
+    allow_origins=["*"],  # em produção restringir
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
+# Registrar rotas
 app.include_router(router)
 
-# Servir arquivos gerados
+# Servir imagens geradas
 app.mount("/outputs", StaticFiles(directory=str(OUTPUT_DIR)), name="outputs")

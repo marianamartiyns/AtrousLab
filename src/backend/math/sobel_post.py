@@ -1,8 +1,9 @@
 from __future__ import annotations
 import numpy as np
 from typing import Tuple
-from .errors import PostProcessError
 
+class PostProcessError(Exception):
+    pass
 
 def sobel_visualize_channel(x: np.ndarray) -> np.ndarray:
     """

@@ -1,8 +1,8 @@
-from .reader import read_rgb24
-from .writer import write_rgb24
+from .image_io import read_rgb24
+from .image_io import write_rgb24
 from .ops import get_pixel, set_pixel, split_channels, merge_channels
 from .models import RGBImage
-from .errors import ImageIOError, ImageReadError, ImageWriteError, ImageShapeError
+from .image_io import ImageIOError, ImageReadError, ImageWriteError, ImageShapeError
 
 __all__ = [
     "read_rgb24",

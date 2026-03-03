@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import Tuple
 import numpy as np
 
-from .errors import ImageShapeError
+from .image_io import ImageShapeError
 
 def assert_rgb_hwc(data: np.ndarray) -> None:
     if not isinstance(data, np.ndarray):

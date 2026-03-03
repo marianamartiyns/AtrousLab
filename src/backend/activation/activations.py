@@ -1,12 +1,11 @@
 from __future__ import annotations
-
 from typing import Literal
 import numpy as np
 
-from .errors import ActivationError
-
 ActivationType = Literal["relu", "identity"]
 
+class ActivationError(Exception):
+    pass
 
 def apply_activation(x: np.ndarray, activation: ActivationType) -> np.ndarray:
     """

@@ -1,7 +1,15 @@
 from __future__ import annotations
 from typing import List, Tuple
 import numpy as np
-from .errors import CorrelationShapeError, CorrelationParamError
+
+class MathError(Exception):
+    pass
+
+class CorrelationShapeError(MathError):
+    pass
+
+class CorrelationParamError(MathError):
+    pass
 
 
 def kernel_effective_size(mask: List[List[float]] | np.ndarray, r: int) -> Tuple[int, int]:

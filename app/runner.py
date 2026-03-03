@@ -1,59 +1,145 @@
-from __future__ import annotations
-
+import json
+import numpy as np
 from pathlib import Path
-from typing import Dict, Any
-import time
+from PIL import Image
 
 from app.settings import OUTPUT_DIR
 
-from src.backend.config import load_config
-from src.backend.io import read_rgb24, write_rgb24
-from src.backend.pipeline import run_rgb_pipeline
-from src.backend.post import sobel_visualize_rgb
+
+def apply_activation(x: np.ndarray, mode: str) -> np.ndarray:
+    mode = (mode or "identity").lower()
+    if mode == "relu":
+        return np.maximum(0, x)
+    if mode == "identity":
+        return x
+    raise ValueError(f"Ativação desconhecida: {mode}")
 
 
-def run_job(config_path: Path, image_path: Path, make_sobel_vis: bool) -> Dict[str, Any]:
-    logs: list[str] = []
-    t0 = time.time()
+def postprocess_sobel(img: np.ndarray) -> np.ndarray:
+    # img pode ser HxWx3 (float)
+    img = np.abs(img)
+    min_val = float(img.min())
+    max_val = float(img.max())
+    if max_val - min_val == 0:
+        return np.zeros_like(img, dtype=np.uint8)
 
-    logs.append(f"Config: {config_path.name}")
-    logs.append(f"Imagem: {image_path.name}")
+    img = (img - min_val) / (max_val - min_val)
+    img = img * 255.0
+    return img.astype(np.uint8)
 
-    cfg = load_config(config_path)
-    logs.append(f"Params: stride={cfg.stride}, r={cfg.r}, activation={cfg.activation}")
-    logs.append(f"Mask file: {cfg.mask_file} | mask={cfg.m}x{cfg.n}")
 
-    img = read_rgb24(image_path)
-    logs.append(f"Imagem carregada: {img.width}x{img.height}")
+def correlate2d_atrous_stride(channel: np.ndarray, kernel: np.ndarray, stride: int, r: int) -> np.ndarray:
+    """
+    Correlação 2D (não convolução) com:
+      - stride (passo)
+      - dilation rate r (atrous): espaçamento entre amostras do kernel
+    Saída: H_out x W_out (float32)
+    """
+    if stride < 1:
+        raise ValueError("stride deve ser >= 1")
+    if r < 1:
+        raise ValueError("r deve ser >= 1")
 
-    result = run_rgb_pipeline(
-        rgb_u8=img.data,
-        mask=cfg.mask,
-        r=cfg.r,
-        stride=cfg.stride,
-        activation=cfg.activation,
-        make_visualization=False,  # visualização Sobel faremos no módulo 7
-    )
+    h, w = channel.shape
+    kh, kw = kernel.shape
+    if kh % 2 == 0 or kw % 2 == 0:
+        raise ValueError("mask/kernel deve ter dimensões ímpares (ex: 3x3, 5x5).")
 
-    # Salva resultado “normal” (RGB clipado)
-    out_name = f"result_{int(time.time()*1000)}.png"
-    out_path = OUTPUT_DIR / out_name
-    write_rgb24(out_path, result.out_rgb_u8)
-    logs.append(f"Resultado salvo: {out_name}")
+    # tamanho efetivo do kernel com dilatação (atrous)
+    eff_kh = (kh - 1) * r + 1
+    eff_kw = (kw - 1) * r + 1
+    pad_h = eff_kh // 2
+    pad_w = eff_kw // 2
 
-    sobel_name = None
-    if make_sobel_vis:
-        vis = sobel_visualize_rgb(result.out_r, result.out_g, result.out_b)
-        sobel_name = f"sobelvis_{int(time.time()*1000)}.png"
-        sobel_path = OUTPUT_DIR / sobel_name
-        write_rgb24(sobel_path, vis)
-        logs.append(f"Sobel vis salvo: {sobel_name}")
+    padded = np.pad(channel, ((pad_h, pad_h), (pad_w, pad_w)), mode="constant")
 
-    logs.append(f"Tempo total: {time.time()-t0:.3f}s")
+    # saída com stride: varre a imagem original em passos de 'stride'
+    out_h = (h + 2 * pad_h - eff_kh) // stride + 1
+    out_w = (w + 2 * pad_w - eff_kw) // stride + 1
+
+    out = np.zeros((out_h, out_w), dtype=np.float32)
+
+    # correlação: soma kernel[u,v] * pixel deslocado por u*r, v*r
+    for oi in range(out_h):
+        i = oi * stride
+        for oj in range(out_w):
+            j = oj * stride
+            acc = 0.0
+            for u in range(kh):
+                for v in range(kw):
+                    acc += float(kernel[u, v]) * float(padded[i + u * r, j + v * r])
+            out[oi, oj] = acc
+
+    return out
+
+
+def upsample_nearest(x: np.ndarray, target_h: int, target_w: int) -> np.ndarray:
+    """
+    Upsample nearest neighbor (para voltar ao tamanho original quando stride>1).
+    x: Hs x Ws (float)
+    retorna: target_h x target_w
+    """
+    hs, ws = x.shape
+    if hs == target_h and ws == target_w:
+        return x
+
+    # mapeamento simples
+    yi = (np.linspace(0, hs - 1, target_h)).round().astype(int)
+    xi = (np.linspace(0, ws - 1, target_w)).round().astype(int)
+    return x[yi[:, None], xi[None, :]]
+
+
+def run_pipeline(config_path: Path, image_path: Path, run_id: str) -> dict:
+    with config_path.open("r", encoding="utf-8") as f:
+        cfg = json.load(f)
+
+    # -------- ler parâmetros do usuário ----------
+    if "mask" not in cfg:
+        raise ValueError("Config inválida: faltou 'mask' (matriz da máscara).")
+
+    mask = np.array(cfg["mask"], dtype=np.float32)
+    if mask.ndim != 2:
+        raise ValueError("'mask' deve ser uma matriz 2D.")
+
+    stride = int(cfg.get("stride", 1))
+    r = int(cfg.get("r", 1))
+    activation = str(cfg.get("activation", "identity"))
+    filter_type = str(cfg.get("type", "generic")).lower()
+
+    # -------- carregar imagem ----------
+    image = Image.open(image_path).convert("RGB")
+    img = np.array(image, dtype=np.float32)  # HxWx3
+    h, w, _ = img.shape
+
+    # -------- pipeline RGB ----------
+    out_channels = []
+    for c in range(3):
+        ch = img[:, :, c]
+        corr = correlate2d_atrous_stride(ch, mask, stride=stride, r=r)
+        act = apply_activation(corr, activation)
+
+        # volta para HxW para recombinar e salvar
+        act_up = upsample_nearest(act, h, w)
+        out_channels.append(act_up)
+
+    out = np.stack(out_channels, axis=2)  # HxWx3 float
+
+    # -------- pós-processamento específico ----------
+    if filter_type == "sobel":
+        out_u8 = postprocess_sobel(out)
+    else:
+        out_u8 = np.clip(out, 0, 255).astype(np.uint8)
+
+    # -------- salvar ----------
+    output_filename = f"{run_id}_output.png"
+    output_path = OUTPUT_DIR / output_filename
+    Image.fromarray(out_u8).save(output_path)
 
     return {
         "ok": True,
-        "outputFile": out_name,
-        "sobelVisFile": sobel_name,
-        "logs": logs,
+        "outputUrl": f"/outputs/{output_filename}",
+        "logs": [
+            f"mask={mask.shape}, stride={stride}, r={r}, activation={activation}, type={filter_type}",
+            "Pipeline executado com sucesso."
+        ],
     }

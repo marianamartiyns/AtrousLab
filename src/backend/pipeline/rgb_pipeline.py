@@ -8,7 +8,9 @@ from src.backend.io.ops import split_channels, merge_channels, assert_rgb_hwc
 from src.backend.math import correlate2d_dilated_stride
 from src.backend.activation import apply_activation
 from src.backend.io.normalize import abs_then_hist_expand 
-from .errors import PipelineError
+
+class PipelineError(Exception):
+    pass
 
 ActivationType = Literal["relu", "identity"]
 

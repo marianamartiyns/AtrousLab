@@ -113,54 +113,62 @@ export default function RunFilter() {
     }
   }
 
+  function scrollToContent() {
+    const el = document.getElementById("run-content")
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" })
+    }
+  }
+
   return (
-    <div className="page">
-      <video className="bgVideo" autoPlay muted loop playsInline>
-        <source src="/imgs/video_bg.mp4" type="video/mp4" />
-      </video>
+    <div className="page runPage">
+      <section className="landingHero">
+        <div className="landingOverlay" />
 
-      <div className="bgOverlay" />
-
-      <header className="hero">
-        <div className="heroInner">
-          <div className="brand">
-            <div className="brandMark">█</div>
-            <div>
-              <h1>Aplicação de Correlação RGB</h1>
-              <p>
-                Envie a máscara, selecione os parâmetros da operação e gere o output.
-              </p>
-            </div>
-          </div>
-
-          <div className="heroCard">
-            <div className="grid">
-              <RunInputCard
-                maskFile={maskFile}
-                imageFile={imageFile}
-                setMaskFile={setMaskFile}
-                setImageFile={setImageFile}
-                stride={stride}
-                setStride={setStride}
-                dilationRate={dilationRate}
-                setDilationRate={setDilationRate}
-                activation={activation}
-                setActivation={setActivation}
-                filterType={filterType}
-                setFilterType={setFilterType}
-                onRun={run}
-                busy={busy}
-                error={error}
-              />
-              <RunOutputCard resp={resp} />
-            </div>
+        <div className="landingInner">
+          <div className="landingVideoWrap">
+            <video className="landingVideo" autoPlay muted loop playsInline>
+              <source src="/imgs/video_bg.mp4" type="video/mp4" />
+            </video>
           </div>
         </div>
-      </header>
+      </section>
+
+      <main id="run-content" className="contentSection">
+        <div className="contentHeader">
+          <h2>Painel de processamento</h2>
+          <p>
+            Configure os parâmetros, envie os arquivos e visualize o resultado
+            do filtro logo abaixo.
+          </p>
+        </div>
+
+        <div className="grid">
+          <RunInputCard
+            maskFile={maskFile}
+            imageFile={imageFile}
+            setMaskFile={setMaskFile}
+            setImageFile={setImageFile}
+            stride={stride}
+            setStride={setStride}
+            dilationRate={dilationRate}
+            setDilationRate={setDilationRate}
+            activation={activation}
+            setActivation={setActivation}
+            filterType={filterType}
+            setFilterType={setFilterType}
+            onRun={run}
+            busy={busy}
+            error={error}
+          />
+
+          <RunOutputCard resp={resp} />
+        </div>
+      </main>
 
       <footer className="footer">
         <span className="footerText">
-          Tema Retro UI • Mariana Martins • Processamento Digital de Imagens
+          UFPB • Mariana Martins • Processamento Digital de Imagens
         </span>
       </footer>
     </div>

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any
+import re
 
 import numpy as np
 
@@ -23,6 +24,18 @@ def _read_bytes(path: Path) -> bytes:
         return path.read_bytes()
     except Exception as e:
         raise RunnerError(f"Falha ao ler arquivo: {path}. Erro: {e}") from e
+
+
+def _safe_stem(filename: str) -> str:
+    """
+    Extrai o nome-base do arquivo e remove caracteres problemáticos
+    para uso seguro no nome da saída.
+    Ex.: 'sobel-x 3x3.txt' -> 'sobel-x_3x3'
+    """
+    stem = Path(filename).stem.strip()
+    stem = stem.replace(" ", "_")
+    stem = re.sub(r"[^A-Za-z0-9_\-]+", "", stem)
+    return stem or "mask"
 
 
 def run_pipeline(
@@ -64,7 +77,8 @@ def run_pipeline(
     else:
         output_rgb_u8 = pipeline_result.out_rgb_u8
 
-    output_filename = f"{run_id}_output.png"
+    mask_base_name = _safe_stem(cfg.mask_name)
+    output_filename = f"{mask_base_name}_output_{run_id}.png"
     output_path = OUTPUT_DIR / output_filename
 
     out_image = RGBImage(path=str(output_path), data=output_rgb_u8)
@@ -83,6 +97,7 @@ def run_pipeline(
             f"filter_type={cfg.filter_type}",
             f"input_shape={tuple(rgb_image.data.shape)}",
             f"output_shape={tuple(output_rgb_u8.shape)}",
+            f"output_file={output_filename}",
             f"sobel_postprocess={'sim' if cfg.filter_type == 'sobel' else 'nao'}",
             "Pipeline executado com sucesso.",
         ],

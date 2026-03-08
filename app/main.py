@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -5,19 +7,30 @@ from fastapi.staticfiles import StaticFiles
 from app.routes import router
 from app.settings import OUTPUT_DIR
 
-app = FastAPI(title="Filtro RGB - Orquestrador")
+app = FastAPI(
+    title="Aplicação de Correlação Dilatada RGB",
+    description=(
+        "Sistema para processamento de imagens RGB 24 bits com correlação dilatada "
+        "manual por canal, sem padding, com stride, taxa r e ativação configuráveis."
+    ),
+)
 
-# CORS liberado para desenvolvimento
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # em produção restringir
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# Registrar rotas
 app.include_router(router)
 
-# Servir imagens geradas
 app.mount("/outputs", StaticFiles(directory=str(OUTPUT_DIR)), name="outputs")
+
+
+@app.get("/")
+def root():
+    return {
+        "ok": True,
+        "message": "Backend da aplicação de correlação RGB está em execução."
+    }

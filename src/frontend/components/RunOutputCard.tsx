@@ -6,7 +6,7 @@ type Props = {
 }
 
 export default function RunOutputCard({ resp }: Props) {
-  const imgUrl = resp?.outputUrl ? resp.outputUrl : null
+  const imgUrl = resp?.outputUrl ?? null
 
   return (
     <section className="card">
@@ -18,18 +18,20 @@ export default function RunOutputCard({ resp }: Props) {
       {!resp ? (
         <div className="empty">
           <div className="scanline" />
-          <p>Nenhum resultado ainda. Faça upload e rode o filtro.</p>
+          <p>Nenhum resultado ainda. Envie a máscara, escolha os parâmetros e rode o filtro.</p>
         </div>
       ) : (
         <>
           <div className="statusRow">
-            <span className={resp.ok ? "pill ok" : "pill err"}>{resp.ok ? "OK" : "ERRO"}</span>
+            <span className={resp.ok ? "pill ok" : "pill err"}>
+              {resp.ok ? "OK" : "ERRO"}
+            </span>
             {resp.message ? <span className="msg">{resp.message}</span> : null}
           </div>
 
           {imgUrl ? (
             <div className="preview">
-              <img src={imgUrl} alt="Resultado" />
+              <img src={imgUrl} alt="Resultado processado" />
               <div className="previewBar">
                 <a className="link" href={imgUrl} target="_blank" rel="noreferrer">
                   Abrir imagem

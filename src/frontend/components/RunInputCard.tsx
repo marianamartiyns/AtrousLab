@@ -186,12 +186,6 @@ export default function RunInputCard({
           {busy ? "Processando..." : "RUN"}
         </button>
       </div>
-
-      <div className="hint">
-        O app enviará um <code>config.json</code> gerado automaticamente com{" "}
-        <code>stride</code>, <code>r</code>, <code>activation</code> e{" "}
-        <code>filter_type</code>, além da <code>mask.txt</code> e da imagem.
-      </div>
     </section>
   )
 }

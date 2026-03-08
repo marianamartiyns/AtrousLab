@@ -35,27 +35,31 @@ body {
   background: #000000;
 }
 
-/* HERO / LANDING */
-
+/* lading*/
 .landingHero {
   position: relative;
   min-height: 100vh;
-  padding: 56px 20px 40px;
+  padding: 28px 20px 40px;
   display: flex;
   align-items: flex-start;
   justify-content: center;
   background: #000000;
+  overflow: hidden;
 }
 
 .landingOverlay {
-  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  z-index: 1;
 }
 
 .landingInner {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   width: 100%;
   max-width: 1500px;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -96,6 +100,9 @@ p {
 }
 
 .landingVideoWrap {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
   width: 100%;
   display: flex;
   justify-content: center;
@@ -111,8 +118,6 @@ p {
   box-shadow: none;
 }
 
-/* CONTENT */
-
 .contentSection {
   max-width: 1500px;
   margin: 0 auto;
@@ -123,8 +128,6 @@ p {
   text-align: center;
   margin-bottom: 24px;
 }
-
-/* GRID DOS CARDS */
 
 .grid {
   display: grid;
@@ -139,8 +142,7 @@ p {
   }
 }
 
-/* CARDS */
-
+/* Cards */
 .card {
   border: 1px solid var(--stroke);
   border-radius: var(--radius);
@@ -187,8 +189,7 @@ p {
   border-radius: 999px;
 }
 
-/* FORM */
-
+/* Formulario */
 .field {
   margin: 12px 0;
 }
@@ -246,8 +247,7 @@ label {
   font-size: 12px;
 }
 
-/* BUTTONS */
-
+/* Botões */
 .btn {
   background: linear-gradient(180deg, rgba(90, 178, 255, 0.22), rgba(47, 125, 246, 0.1));
   border: 1px solid rgba(90, 178, 255, 0.35);
@@ -272,8 +272,7 @@ label {
   justify-content: flex-end;
 }
 
-/* ALERT */
-
+/* alerta de erro */
 .alert {
   margin-top: 10px;
   border: 1px solid rgba(255, 82, 82, 0.35);
@@ -289,8 +288,6 @@ label {
   color: var(--muted);
 }
 
-/* EMPTY STATE */
-
 .empty {
   border: 1px dashed var(--stroke);
   border-radius: 14px;
@@ -302,8 +299,7 @@ label {
   text-align: center;
 }
 
-/* IMAGE PREVIEW */
-
+/* display da imagem */
 .preview {
   border: 1px solid var(--stroke);
   border-radius: 14px;
@@ -312,8 +308,10 @@ label {
 }
 
 .preview img {
-  width: 100%;
+  max-width: 70%;
+  height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 .previewBar {
@@ -334,7 +332,6 @@ label {
 }
 
 /* LOGS */
-
 .logs {
   margin-top: 12px;
 }
@@ -354,8 +351,6 @@ label {
   font-size: 12px;
 }
 
-/* FOOTER */
-
 .footer {
   padding: 4px 20px 24px;
 }
@@ -366,4 +361,88 @@ label {
   color: rgba(238, 246, 255, 0.42);
   font-size: 11px;
   text-align: center;
+}
+
+.page.runPage {
+  min-height: 100vh;
+  background: #050505;
+  color: white;
+}
+
+.landingTopbar {
+  position: absolute;
+  top: 14px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  z-index: 5;
+}
+
+.landingBrandBlock {
+  display: flex;
+  align-items: center;
+}
+
+.landingTitle {
+  margin: 0;
+  font-size: 2rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.landingMenu {
+  position: relative;
+}
+
+.landingMenuButton {
+  list-style: none;
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  background: rgba(0, 0, 0, 0.55);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: white;
+  font-weight: 600;
+  backdrop-filter: blur(8px);
+}
+
+.landingMenuButton::-webkit-details-marker {
+  display: none;
+}
+
+.landingDropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 220px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.75rem;
+  border-radius: 14px;
+  background: rgba(10, 10, 10, 0.92);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35);
+}
+
+.landingDropdownLink,
+.landingDropdownButton {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 0.8rem 0.9rem;
+  border-radius: 10px;
+  color: white;
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font: inherit;
+}
+
+.landingDropdownLink:hover,
+.landingDropdownButton:hover {
+  background: rgba(255, 255, 255, 0.08);
 }

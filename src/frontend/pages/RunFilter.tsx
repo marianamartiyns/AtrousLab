@@ -126,6 +126,44 @@ export default function RunFilter() {
         <div className="landingOverlay" />
 
         <div className="landingInner">
+          <div className="landingTopbar">
+            <div className="landingBrandBlock">
+              <h1 className="landingTitle">AtrousLab</h1>
+            </div>
+
+            <details className="landingMenu">
+              <summary className="landingMenuButton">Menu ▾</summary>
+
+              <div className="landingDropdown">
+                <a
+                  className="landingDropdownLink"
+                  href="https://github.com/marianamartiyns/AtrousLab"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Repositório
+                </a>
+
+                <a
+                  className="landingDropdownLink"
+                  href="/Relátorio - Projeto Prático.pdf"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  Relatório
+                </a>
+
+                <button
+                  type="button"
+                  className="landingDropdownLink landingDropdownButton"
+                  onClick={scrollToContent}
+                >
+                  Processar imagem
+                </button>
+              </div>
+            </details>
+          </div>
+
           <div className="landingVideoWrap">
             <video className="landingVideo" autoPlay muted loop playsInline>
               <source src="/imgs/video_bg.mp4" type="video/mp4" />
@@ -168,7 +206,7 @@ export default function RunFilter() {
 
       <footer className="footer">
         <span className="footerText">
-          UFPB • Mariana Martins • Processamento Digital de Imagens
+          Mariana Martins • Processamento Digital de Imagens • Leonardo Vidal Batista
         </span>
       </footer>
     </div>

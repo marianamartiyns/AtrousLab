@@ -22,12 +22,12 @@ export default function RunOutputCard({ resp }: Props) {
         </div>
       ) : (
         <>
-          <div className="statusRow">
+         {/* <div className="statusRow">
             <span className={resp.ok ? "pill ok" : "pill err"}>
               {resp.ok ? "OK" : "ERRO"}
             </span>
             {resp.message ? <span className="msg">{resp.message}</span> : null}
-          </div>
+          </div> */}
 
           {imgUrl ? (
             <div className="preview">

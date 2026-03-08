@@ -1,23 +1,14 @@
 from __future__ import annotations
-
 import numpy as np
-
 
 class NormalizeError(Exception):
     pass
 
-
 def abs_then_hist_expand(x: np.ndarray) -> np.ndarray:
     """
-    Normalização para visualização:
-      1) abs
-      2) expansão min-max para [0,255]
-
-    Entrada:
-      - matriz 2D com valores float/int
-
-    Saída:
-      - matriz 2D uint8
+    Normalização para visualização: abs e expansão min-max para [0,255]
+    Entrada: matriz 2D com valores float/int
+    Saída: matriz 2D uint8
     """
     if not isinstance(x, np.ndarray):
         raise NormalizeError("x deve ser np.ndarray.")
@@ -39,9 +30,7 @@ def abs_then_hist_expand(x: np.ndarray) -> np.ndarray:
 
 
 def to_uint8_clipped(x: np.ndarray) -> np.ndarray:
-    """
-    Clipa para [0,255], arredonda e converte para uint8.
-    """
+    # Clipa para [0,255], arredonda e converte para uint8.
     if not isinstance(x, np.ndarray):
         raise NormalizeError("x deve ser np.ndarray.")
 

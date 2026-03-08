@@ -1,8 +1,6 @@
 from __future__ import annotations
-
 from typing import Tuple
 import numpy as np
-
 from .image_io import ImageShapeError
 
 
@@ -14,9 +12,7 @@ def assert_rgb_hwc(data: np.ndarray) -> None:
 
 
 def get_pixel(data: np.ndarray, y: int, x: int) -> Tuple[int, int, int]:
-    """
-    Retorna o pixel (y, x) no formato (R, G, B).
-    """
+    # Retorna o pixel (y, x) no formato (R, G, B).
     assert_rgb_hwc(data)
 
     h, w, _ = data.shape
@@ -28,9 +24,7 @@ def get_pixel(data: np.ndarray, y: int, x: int) -> Tuple[int, int, int]:
 
 
 def set_pixel(data: np.ndarray, y: int, x: int, rgb: Tuple[int, int, int]) -> None:
-    """
-    Define o pixel (y, x) com clip para [0,255].
-    """
+    # Define o pixel (y, x) com clip para [0,255].
     assert_rgb_hwc(data)
 
     h, w, _ = data.shape
@@ -46,7 +40,6 @@ def set_pixel(data: np.ndarray, y: int, x: int, rgb: Tuple[int, int, int]) -> No
 def split_channels(data: np.ndarray, as_float: bool = True) -> tuple[np.ndarray, np.ndarray, np.ndarray]:
     """
     Separa H x W x 3 em canais R, G, B.
-
     - as_float=True  -> float32
     - as_float=False -> mantém dtype original
     """
@@ -67,9 +60,8 @@ def merge_channels(
 ) -> np.ndarray:
     """
     Recombina canais 2D em imagem H x W x 3.
-
-    - clip=True  -> clipa e converte para uint8
-    - clip=False -> exige canais uint8
+    - clip=True: clipa e converte para uint8
+    - clip=False:  exige canais uint8
     """
     if not (isinstance(r, np.ndarray) and isinstance(g, np.ndarray) and isinstance(b, np.ndarray)):
         raise ImageShapeError("r, g, b devem ser np.ndarray.")

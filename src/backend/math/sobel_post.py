@@ -43,10 +43,8 @@ def sobel_visualize_rgb(
     g: np.ndarray,
     b: np.ndarray,
 ) -> np.ndarray:
-    """
-    Aplica o pós-processamento Sobel em cada canal
-    e retorna imagem RGB H x W x 3 uint8.
-    """
+
+    # Aplica o pós-processamento Sobel em cada canal e retorna imagem RGB H x W x 3 uint8.
     r_vis = sobel_visualize_channel(r)
     g_vis = sobel_visualize_channel(g)
     b_vis = sobel_visualize_channel(b)

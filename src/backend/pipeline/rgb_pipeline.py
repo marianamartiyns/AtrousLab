@@ -1,9 +1,7 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Optional, Literal
 import numpy as np
-
 from src.backend.io.ops import split_channels, merge_channels, assert_rgb_hwc
 from src.backend.math.correlation2d import correlate2d_dilated_stride
 from src.backend.activation.activations import apply_activation
@@ -19,16 +17,6 @@ ActivationType = Literal["relu", "identity"]
 
 @dataclass(frozen=True)
 class RGBPipelineResult:
-    """
-    Resultados do pipeline RGB.
-
-    - out_r/out_g/out_b:
-        canais float32 após correlação + ativação
-    - out_rgb_u8:
-        recombinação clipada para salvar em RGB 24 bits
-    - vis_rgb_u8:
-        versão opcional para visualização (abs + expansão), útil para Sobel
-    """
     out_r: np.ndarray
     out_g: np.ndarray
     out_b: np.ndarray
@@ -71,20 +59,20 @@ def run_rgb_pipeline(
     if act not in {"relu", "identity"}:
         raise PipelineError(f"Ativação inválida: {activation}")
 
-    # 1) separa canais
+    # separa canais
     r_in, g_in, b_in = split_channels(rgb_u8, as_float=True)
 
-    # 2) correlação por canal
+    # correlação por canal
     r_corr = correlate2d_dilated_stride(r_in, mask=mask, r=r, stride=stride)
     g_corr = correlate2d_dilated_stride(g_in, mask=mask, r=r, stride=stride)
     b_corr = correlate2d_dilated_stride(b_in, mask=mask, r=r, stride=stride)
 
-    # 3) ativação após o somatório
+    # ativação após o somatório
     r_out = apply_activation(r_corr, act)
     g_out = apply_activation(g_corr, act)
     b_out = apply_activation(b_corr, act)
 
-    # 4) saída pronta para salvar
+    # saída RGB uint8
     out_rgb_u8 = merge_channels(r_out, g_out, b_out, clip=True)
 
     vis_rgb_u8 = None

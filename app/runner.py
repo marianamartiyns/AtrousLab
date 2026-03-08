@@ -1,17 +1,13 @@
 from __future__ import annotations
-
 from pathlib import Path
 from typing import Any
 import re
-
 import numpy as np
-
 from src.backend.config.config import load_config_from_uploads
 from src.backend.io.image_io import read_rgb24, write_rgb24
 from src.backend.io.models import RGBImage
 from src.backend.pipeline.rgb_pipeline import run_rgb_pipeline
 from src.backend.math.sobel_post import sobel_visualize_rgb
-
 from app.settings import OUTPUT_DIR
 
 
@@ -27,11 +23,7 @@ def _read_bytes(path: Path) -> bytes:
 
 
 def _safe_stem(filename: str) -> str:
-    """
-    Extrai o nome-base do arquivo e remove caracteres problemáticos
-    para uso seguro no nome da saída.
-    Ex.: 'sobel-x 3x3.txt' -> 'sobel-x_3x3'
-    """
+    # ajuste nome do arquivo: remover extensão e espaços, e substituir caracteres não alfanuméricos por '_'
     stem = Path(filename).stem.strip()
     stem = stem.replace(" ", "_")
     stem = re.sub(r"[^A-Za-z0-9_\-]+", "", stem)
@@ -84,7 +76,7 @@ def run_pipeline(
     out_image = RGBImage(path=str(output_path), data=output_rgb_u8)
     write_rgb24(out_image, output_path)
 
-    return {
+    return { # Precisa de update
         "ok": True,
         "outputUrl": f"/outputs/{output_filename}",
         "logs": [

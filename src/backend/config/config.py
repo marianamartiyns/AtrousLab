@@ -1,5 +1,4 @@
 from __future__ import annotations
-
 from dataclasses import dataclass
 from typing import Any, Dict, List, Literal
 import json
@@ -10,14 +9,11 @@ FilterType = Literal["generic", "sobel"]
 ALLOWED_ACTIVATIONS = {"relu", "identity"}
 ALLOWED_FILTER_TYPES = {"generic", "sobel"}
 
-
 class ConfigError(Exception):
     pass
 
-
 class ConfigParseError(ConfigError):
     pass
-
 
 class ConfigValidationError(ConfigError):
     pass

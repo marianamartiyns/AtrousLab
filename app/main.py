@@ -1,17 +1,14 @@
 from __future__ import annotations
-
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-
 from app.routes import router
 from app.settings import OUTPUT_DIR
 
 app = FastAPI(
     title="Aplicação de Correlação Dilatada RGB",
     description=(
-        "Sistema para processamento de imagens RGB 24 bits com correlação dilatada "
-        "manual por canal, sem padding, com stride, taxa r e ativação configuráveis."
+        "Sistema para processamento de imagens RGB 24 bits usando correlação dilatada."
     ),
 )
 
@@ -24,7 +21,6 @@ app.add_middleware(
 )
 
 app.include_router(router)
-
 app.mount("/outputs", StaticFiles(directory=str(OUTPUT_DIR)), name="outputs")
 
 

@@ -1,23 +1,17 @@
 from __future__ import annotations
-
 from pathlib import Path
 from PIL import Image, UnidentifiedImageError
 import numpy as np
-
 from .models import RGBImage
-
 
 class ImageIOError(Exception):
     pass
 
-
 class ImageReadError(ImageIOError):
     pass
 
-
 class ImageWriteError(ImageIOError):
     pass
-
 
 class ImageShapeError(ImageIOError):
     pass
@@ -28,10 +22,7 @@ SUPPORTED_WRITE_EXTS = {".png", ".tif", ".tiff"}
 
 
 def read_rgb24(path: str | Path) -> RGBImage:
-    """
-    Lê uma imagem PNG/TIF/TIFF e converte explicitamente para RGB 24 bits.
-    Retorna RGBImage com data no formato H x W x 3 uint8.
-    """
+    # pega a imagem (PNG/TIF/TIFF) e converte para RGB 24 bits. Retorna RGBImage com data no formato H x W x 3 uint8.
     p = Path(path)
 
     if not p.exists():
@@ -66,10 +57,7 @@ def read_rgb24(path: str | Path) -> RGBImage:
 
 
 def write_rgb24(image: RGBImage, out_path: str | Path) -> str:
-    """
-    Salva uma RGBImage no formato PNG/TIF/TIFF.
-    Exige H x W x 3 uint8.
-    """
+    # Salva a RGBImage (PNG/TIF/TIFF) - exige H x W x 3 uint8. Retorna o caminho do arquivo salvo.
     p = Path(out_path)
     ext = p.suffix.lower()
 

@@ -1,16 +1,12 @@
 from __future__ import annotations
-
 from pathlib import Path
 import shutil
 import uuid
-
 from fastapi import APIRouter, File, HTTPException, UploadFile
-
 from app.runner import run_pipeline
 from app.settings import UPLOAD_DIR
 
 router = APIRouter()
-
 
 CONFIG_EXTS = {".json"}
 MASK_EXTS = {".txt"}

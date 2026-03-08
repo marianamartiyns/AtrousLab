@@ -7,10 +7,8 @@ import numpy as np
 class MathError(Exception):
     pass
 
-
 class CorrelationShapeError(MathError):
     pass
-
 
 class CorrelationParamError(MathError):
     pass
@@ -65,8 +63,7 @@ def correlate2d_dilated_stride(
     stride: int,
 ) -> np.ndarray:
     """
-    Correlação 2D dilatada manual, sem padding.
-
+    Correlação 2D dilatada manual (sem padding)
     y[oy, ox] = sum_{i,j} x[oy*stride + i*r, ox*stride + j*r] * mask[i,j]
 
     - x: matriz 2D H x W

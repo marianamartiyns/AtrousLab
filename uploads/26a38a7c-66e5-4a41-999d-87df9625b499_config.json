@@ -1,0 +1,6 @@
+{
+  "stride": 2,
+  "r": 5,
+  "activation": "identity",
+  "filter_type": "generic"
+}

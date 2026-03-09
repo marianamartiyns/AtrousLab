@@ -1,11 +1,9 @@
-# 🧪 AtrousLab
+#  ꫂ❁ AtrousLab
 
 > A web-based image processing project for applying **dilated correlation on 24-bit RGB images** using external masks, configurable parameters, and a manual processing pipeline.
 > Built as a practical academic project, with emphasis on implementing correlation logic from scratch instead of using ready-made convolution functions.
 
----
-
-## 📋 Project Overview
+### 📋 Project Overview
 
 This repository contains a complete system for **RGB image filtering through dilated correlation**, combining:
 
@@ -17,11 +15,11 @@ This repository contains a complete system for **RGB image filtering through dil
    - Provides a web interface for uploading the image and configuration files.
    - Displays the generated output image and execution logs.
 
+https://github.com/user-attachments/assets/5158b5b3-f278-465d-ad92-c092db5ccd01
+
 The project was designed to explore fundamental concepts of **digital image processing**, such as correlation, dilation, stride, activation functions, and edge detection with Sobel operators.
 
----
-
-## 🎯 Objective
+### 🎯 Objective
 
 The goal of AtrousLab is to implement a system capable of:
 
@@ -37,9 +35,7 @@ The goal of AtrousLab is to implement a system capable of:
 - applying specific post-processing for Sobel filters;
 - displaying and saving the processed image.
 
----
-
-## ⚙️ Main Features
+### ⚙️ Main Features
 
 * [x] Load `.png`, `.tif`, and `.tiff` images
 * [x] Convert input images to **RGB 24 bits**
@@ -56,9 +52,7 @@ The goal of AtrousLab is to implement a system capable of:
 * [x] FastAPI backend for processing
 * [x] React frontend for file upload and result visualization
 
----
-
-## 🧱 Project Structure
+### 🧱 Project Structure
 
 ```text
 ATROUSLAB/
@@ -95,6 +89,7 @@ ATROUSLAB/
 │       ├── package.json
 │       ├── styles.css
 │       └── tailwind.config.js
+```
 
 > [!NOTE]
 > The report and project documentation are written in **Portuguese**, while variable names, file names, and code structure remain mostly in **English** for better technical organization and clarity.

@@ -1,7 +1,6 @@
 #  ꫂ❁ AtrousLab
 
 > A web-based image processing project for applying **dilated correlation on 24-bit RGB images** using external masks, configurable parameters, and a manual processing pipeline.
-> Built as a practical academic project, with emphasis on implementing correlation logic from scratch instead of using ready-made convolution functions.
 
 ### 📋 Project Overview
 
